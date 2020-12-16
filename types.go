@@ -100,6 +100,16 @@ func (mt MapType) canStoreProgram() bool {
 	return mt == ProgramArray
 }
 
+// canBatch returns true if the map type supports batch operations
+func (mt MapType) canBatch() bool {
+	return mt == Array || mt == Hash || mt == LRUHash || mt == PerCPUHash || mt == LRUCPUHash
+}
+
+// canBatchDelete returns true if the map type can batch delete
+func (mt MapType) canBatchDelete() bool {
+	return mt == Hash || mt == LRUHash || mt == PerCPUHash || mt == LRUCPUHash
+}
+
 // ProgramType of the eBPF program
 type ProgramType uint32
 
@@ -201,3 +211,13 @@ const (
 	// Pin an object by using its name as the filename.
 	PinByName
 )
+
+// BatchOptions batch map operations options
+//
+// Mirrors libbpf struct bpf_map_batch_opts
+// Currently BPF_F_FLAG is the only supported
+// flag (for ElemFlags).
+type BatchOptions struct {
+	ElemFlags uint64
+	Flags     uint64
+}
